@@ -35,6 +35,7 @@ public abstract class AbstractMessageListener implements ChannelAwareMessageList
     public void onMessage(Message message, Channel channel) throws Exception {
         MessageProperties messageProperties = message.getMessageProperties();
         Long deliveryTag = messageProperties.getDeliveryTag();
+        // 消费次数
         Long consumerCount = redisTemplate.opsForHash().increment(MQConstants.MQ_CONSUMER_RETRY_COUNT_KEY,
                 messageProperties.getMessageId(), 1);
 
@@ -49,14 +50,16 @@ public abstract class AbstractMessageListener implements ChannelAwareMessageList
                     messageProperties.getMessageId());
         } catch (Exception e) {
             logger.error("RabbitMQ 消息消费失败，" + e.getMessage(), e);
+            // 消费次数达到最大次数
             if (consumerCount >= MQConstants.MAX_CONSUMER_COUNT) {
                 // 入死信队列
                 channel.basicReject(deliveryTag, false);
             } else {
-                // 重回到队列，重新消费, 按照2的指数级递增
+                // 重回到队列，重新消费, (sleep时间)按照2的指数级递增
                 Thread.sleep((long) (Math.pow(MQConstants.BASE_NUM, consumerCount)*1000));
                 redisTemplate.opsForHash().increment(MQConstants.MQ_CONSUMER_RETRY_COUNT_KEY,
                         messageProperties.getMessageId(), 1);
+                // 告知mq重新发送
                 channel.basicNack(deliveryTag, false, true);
             }
         }
