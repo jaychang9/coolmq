@@ -22,8 +22,8 @@ import java.util.Date;
  * @author fw 
  * 创建时间：2017年10月14日 下午10:30:00 
  * @version 1.0.0 
- */  
-@Component 
+ */
+@Component
 @Aspect 
 public class TransactionSender {
 	Logger logger = LoggerFactory.getLogger(TransactionSender.class);

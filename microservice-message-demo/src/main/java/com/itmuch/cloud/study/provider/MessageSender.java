@@ -25,6 +25,6 @@ public class MessageSender {
 	   dbCoordinator = "DBRedisCoordinator")
 	public String transSend(){
 		System.out.println("........trangsmsg send...........");
-		return "hello world";
+		return "hello world "+System.currentTimeMillis();
 	}
 }
