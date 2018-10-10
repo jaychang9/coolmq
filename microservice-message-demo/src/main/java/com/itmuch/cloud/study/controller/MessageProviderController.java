@@ -34,13 +34,14 @@ public class MessageProviderController {
 
 
   @GetMapping("testtransmsg")
+  @Transactional
   public String testMessageWithAnnotation() throws Exception {
         messageSender.transSend();
+      //do some biz
 		return "sucess";
   }
 
   @GetMapping("testsimplemq")
-  @Transactional
   public String testSimpleSender() throws Exception {
 	    /** 生成一个发送对象 */
 		messageSender.send();

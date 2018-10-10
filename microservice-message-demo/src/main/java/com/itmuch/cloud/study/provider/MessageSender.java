@@ -16,7 +16,8 @@ public class MessageSender {
 	
 	public void send() {
 		String context ="hello" + new Date();
-		this.rabbitTemplate.convertAndSend("hello", context);
+		//this.rabbitTemplate.convertAndSend("hello", context);
+		this.rabbitTemplate.convertAndSend("spring-boot-exchange-1","spring-boot-bind-key-1","hello rabbitmq");
 	}
 
 

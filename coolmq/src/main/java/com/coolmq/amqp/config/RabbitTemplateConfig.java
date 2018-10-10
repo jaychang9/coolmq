@@ -43,22 +43,27 @@ public class RabbitTemplateConfig {
         // 消息发送到RabbitMQ交换器后接收ack回调
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if(returnFlag){
-                logger.error("mq发送错误，无对应的的交换机,confirm回掉,ack={},correlationData={} cause={} returnFlag={}",
+                logger.error("mq发送错误，无对应的的交换机,confirm回调,ack={},correlationData={} cause={} returnFlag={}",
                         ack, correlationData, cause, returnFlag);
             }
 
             logger.info("confirm回调，ack={} correlationData={} cause={}", ack, correlationData, cause);
-            String msgId = correlationData.getId();
+            String msgId = correlationData != null ? correlationData.getId() : null;
 
             /** 只要消息能投入正确的消息队列，并持久化，就返回ack为true*/
             if(ack){
                 logger.info("消息已正确投递到队列, correlationData:{}", correlationData);
+                if(correlationData == null){
+                    return;
+                }
                 //清除重发缓存
                 String dbCoordinatior = ((CompleteCorrelationData)correlationData).getCoordinator();
                 DBCoordinator coordinator = (DBCoordinator)applicationContext.getBean(dbCoordinatior);
-                coordinator.setMsgSuccess(msgId);
+                if(msgId != null) {
+                    coordinator.setMsgSuccess(msgId);
+                }
             }else{
-                logger.error("消息投递至交换机失败,业务号:{}，原因:{}",correlationData.getId(),cause);
+                logger.error("消息投递至交换机失败,业务号:{}，原因:{}",correlationData != null ? correlationData.getId() : null,cause);
             }
 
         });
@@ -68,7 +73,7 @@ public class RabbitTemplateConfig {
             String messageId = message.getMessageProperties().getMessageId();
 
             logger.error("return回调，没有找到任何匹配的队列！message id:{},replyCode{},replyText:{},"
-                    + "exchange:{},routingKey{}", messageId, replyCode, replyText, exchange, routingKey);
+                    + "exchange:{},routingKey:{}", messageId, replyCode, replyText, exchange, routingKey);
             returnFlag = true;
         });
 

@@ -15,17 +15,29 @@
 #spring.rabbitmq.address: localhost:5672
 
 server:
-  port: 9020
+  port: 8888
 spring:
   application:
     name: microservice-message-provdier
 
+  redis:
+    host: 10.1.10.239
+    port: 6379
+    password:
+    timeout: 10000
+    jedis:
+      pool:
+        max-active: 10
+        max-wait: -1
+        min-idle: 5
+    database: 4
+
 #mq config
 #spring.rabbitmq.address: localhost:5672
-spring.rabbitmq.host: localhost
+spring.rabbitmq.host: 171.188.0.165
 spring.rabbitmq.port: 5672
-spring.rabbitmq.username: fanglaosi
-spring.rabbitmq.password: fanglaosi
+spring.rabbitmq.username: guest
+spring.rabbitmq.password: guest
 spring.rabbitmq.listener.concurrency: 5
 spring.rabbitmq.listener.max-concurrency: 20
 spring.rabbitmq.listener.retry.enabled: true
@@ -35,10 +47,10 @@ spring.rabbitmq.listener.acknowledge-mode: manual
 spring.rabbitmq.listener.publish-returns: true;
 
 #redis config
-redis.host: localhost
-redis.port: 6379
-redis.timeout: 10000
-redis.pool.max-active: 20
-redis.pool.max-wait: -1
-redis.pool.max-idle: 10
-redis.pool.min-idle: 5
+#redis.host: 10.1.10.239
+#redis.port: 6379
+#redis.timeout: 10000
+#redis.pool.max-active: 20
+#redis.pool.max-wait: -1
+#redis.pool.max-idle: 10
+#redis.pool.min-idle: 5

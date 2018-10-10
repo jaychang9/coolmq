@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /** 
- * 描述：封装sender
+ * 描述：封装sender(实质是一个切面)
  * @author fw 
  * 创建时间：2017年10月14日 下午10:30:00 
  * @version 1.0.0 
